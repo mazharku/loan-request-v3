@@ -58,7 +58,7 @@ public class LoanRequestEventListener {
             if (view != null) {
                 view.setApprovedLoanAmount(event.get("approvedLoanAmount").asDouble());
                 view.setStatus(LoanRequestStatus.APPROVED);
-                view.setProcessedBy(event.get("approvedBy").asText());
+                view.setProcessedBy(event.get("approverId").asText());
                 view.setRemarks(event.get("remarks").asText());
                 view.setProcessedAt(LocalDateTime.now());
                 view.setUpdatedAt(LocalDateTime.now());
@@ -82,8 +82,7 @@ public class LoanRequestEventListener {
             
             if (view != null) {
                 view.setStatus(LoanRequestStatus.REJECTED);
-                view.setProcessedBy(event.get("rejectedBy").asText());
-                view.setRemarks(event.get("reason").asText());
+                view.setRemarks(event.get("rejectionReason").asText());
                 view.setProcessedAt(LocalDateTime.now());
                 view.setUpdatedAt(LocalDateTime.now());
                 

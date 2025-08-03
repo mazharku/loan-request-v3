@@ -10,9 +10,9 @@ public final class ApplicationConstants {
     public static final String LOAN_REQUEST_FANOUT_EXCHANGE = "loan.request.fanout";
     
     // RabbitMQ Queue Names
-    public static final String LOAN_REQUEST_CREATED_QUEUE = "loan.request.created";
-    public static final String LOAN_REQUEST_APPROVED_QUEUE = "loan.request.approved";
-    public static final String LOAN_REQUEST_REJECTED_QUEUE = "loan.request.rejected";
-    public static final String LOAN_REQUEST_UPDATE_QUEUE = "loan.request.updated";
+    public static final String LOAN_REQUEST_CREATED_QUEUE = "loan.request.created.query";
+    public static final String LOAN_REQUEST_APPROVED_QUEUE = "loan.request.approved.query";
+    public static final String LOAN_REQUEST_REJECTED_QUEUE = "loan.request.rejected.query";
+    public static final String LOAN_REQUEST_UPDATE_QUEUE = "loan.request.updated.query";
 
 }

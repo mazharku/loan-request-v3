@@ -30,7 +30,7 @@ public class LoanRequest extends AggregateRoot {
     private Integer approvedDurationInMonths;
     private LoanRequestStatus status;
     private String remarks;
-    private String processedBy;
+    private String approverId;
     private LocalDateTime processedAt;
     
     public LoanRequest(String memberId, String proposalId, Double proposedLoanAmount, Double interestRate,
@@ -56,16 +56,17 @@ public class LoanRequest extends AggregateRoot {
         ));
     }
     
-    public void approve(Double approvedLoanAmount, Integer approvedDurationInMonths, String approverId) {
-        if (this.status != LoanRequestStatus.PENDING) {
+    public void approve(String proposalId,Double approvedLoanAmount, Integer approvedDurationInMonths, String approverId) {
+       /* if (this.status != LoanRequestStatus.PENDING) {
             throw new LoanRequestBusinessException("Can only approve pending loan requests. Current status: " + this.status);
-        }
-        validateApprovalParams(approvedLoanAmount, approverId);
-        
+        }*/
+        //validateApprovalParams(approvedLoanAmount, approverId);
+
+        this.proposalId= proposalId;
         this.approvedLoanAmount = approvedLoanAmount;
         this.approvedDurationInMonths = approvedDurationInMonths;
         this.status = LoanRequestStatus.APPROVED;
-        this.processedBy = approverId;
+        this.approverId = approverId;
         this.processedAt = LocalDateTime.now();
         updateTimestamp();
 
@@ -74,19 +75,18 @@ public class LoanRequest extends AggregateRoot {
             this.memberId,
             this.proposalId,
             this.approvedLoanAmount,
-            this.processedBy,
+            this.approverId,
             this.remarks
         ));
     }
     
-    public void reject(String rejectedBy, String rejectionReason) {
-        if (this.status != LoanRequestStatus.PENDING) {
+    public void reject(String rejectionReason) {
+        /*if (this.status != LoanRequestStatus.PENDING) {
             throw new LoanRequestBusinessException("Can only reject pending loan requests. Current status: " + this.status);
         }
-        validateRejectionParams(rejectionReason);
+        validateRejectionParams(rejectionReason);*/
         
         this.status = LoanRequestStatus.REJECTED;
-        this.processedBy = rejectedBy;
         this.processedAt = LocalDateTime.now();
         this.remarks = rejectionReason;
         updateTimestamp();
@@ -94,9 +94,7 @@ public class LoanRequest extends AggregateRoot {
 
         registerEvent(new LoanRequestRejectedEvent(
             this.id,
-            this.memberId,
             this.proposalId,
-            this.processedBy,
             this.remarks
         ));
     }

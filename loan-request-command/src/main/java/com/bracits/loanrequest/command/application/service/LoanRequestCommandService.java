@@ -24,45 +24,35 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class LoanRequestCommandService {
-    
+
     private final LoanRequestRepository loanRequestRepository;
     private final LoanRequestEventRepository loanRequestEventRepository;
     private final LoanRequestOutboxEventRepository loanRequestOutboxEventRepository;
     private final EventPublisher eventPublisher;
-    
+
     @Transactional
     public String createLoanRequest(CreateLoanRequestCommand command) {
         try {
             log.info("Creating loan request for member: {}", command.memberId());
 
-            LoanRequest loanRequest = new LoanRequest(
-                command.memberId(),
-                command.proposalId(),
-                command.proposedLoanAmount(),
-                command.interestRate(),
-                command.noOfInstallments(),
-                command.loanProductId()
-            );
-            
+            LoanRequest loanRequest = new LoanRequest(command.memberId(), command.proposalId(), command.proposedLoanAmount(), command.interestRate(), command.noOfInstallments(), command.loanProductId());
+
             LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
-            
+
             // Save event sourcing event
             LoanRequestEvent loanRequestEvent = LoanRequestEvent.createCreatedEvent(savedLoanRequest);
             loanRequestEventRepository.save(loanRequestEvent);
-            
+
             // Save outbox event
             LoanRequestOutboxEvent loanRequestOutboxEvent = LoanRequestOutboxEvent.createCreatedEvent(savedLoanRequest);
             loanRequestOutboxEventRepository.save(loanRequestOutboxEvent);
-            
+
             // Publish domain events to fanout exchange
             for (DomainEvent event : savedLoanRequest.getUncommittedEvents()) {
-                eventPublisher.publishEventToFanout(
-                    ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE,
-                    event
-                );
+                eventPublisher.publishEventToFanout(ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE, event);
             }
             savedLoanRequest.markEventsAsCommitted();
-            
+
             log.info("Loan request created with ID: {}", savedLoanRequest.getId());
             return savedLoanRequest.getId();
         } catch (Exception ex) {
@@ -70,108 +60,86 @@ public class LoanRequestCommandService {
             throw new LoanRequestProcessingException("Failed to create loan request", ex);
         }
     }
-    
+
     @Transactional
     public void approveLoanRequest(ApproveLoanRequestCommand command) {
         log.info("Approving loan request for proposal: {}", command.proposalId());
-        
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId())
-            .orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
-        
 
-        loanRequest.approve(
-            command.approvedLoanAmount(),
-            command.approvedDurationInMonths(),
-            command.approverId().toString()
-        );
-        
+        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+
+
+        loanRequest.approve(command.proposalId(), command.approvedLoanAmount(), command.approvedDurationInMonths(), command.approverId().toString());
+
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
-        
+
         // Save event sourcing event
         LoanRequestEvent loanRequestEvent = LoanRequestEvent.createApprovedEvent(savedLoanRequest);
         loanRequestEventRepository.save(loanRequestEvent);
-        
+
         // Save outbox event
         LoanRequestOutboxEvent loanRequestOutboxEvent = LoanRequestOutboxEvent.createApprovedEvent(savedLoanRequest);
         loanRequestOutboxEventRepository.save(loanRequestOutboxEvent);
-        
+
         // Publish domain events to fanout exchange
         for (DomainEvent event : savedLoanRequest.getUncommittedEvents()) {
-            eventPublisher.publishEventToFanout(
-                ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE,
-                event
-            );
+            eventPublisher.publishEventToFanout(ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE, event);
         }
         savedLoanRequest.markEventsAsCommitted();
-        
+
         log.info("Loan request approved for proposal: {}", command.proposalId());
     }
-    
+
     @Transactional
     public void rejectLoanRequest(RejectLoanRequestCommand command) {
         log.info("Rejecting loan request for proposal: {}", command.proposalId());
-        
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId())
-            .orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
-        
-        loanRequest.reject(null, command.rejectionReason()); // No rejectedBy field available
-        
+
+        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+
+        loanRequest.reject(command.rejectionReason());
+
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
-        
+
         // Save event sourcing event
         LoanRequestEvent loanRequestEvent = LoanRequestEvent.createRejectedEvent(savedLoanRequest);
         loanRequestEventRepository.save(loanRequestEvent);
-        
+
         // Save outbox event
         LoanRequestOutboxEvent loanRequestOutboxEvent = LoanRequestOutboxEvent.createRejectedEvent(savedLoanRequest);
         loanRequestOutboxEventRepository.save(loanRequestOutboxEvent);
-        
+
         // Publish domain events to fanout exchange
         for (DomainEvent event : savedLoanRequest.getUncommittedEvents()) {
-            eventPublisher.publishEventToFanout(
-                ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE,
-                event
-            );
+            eventPublisher.publishEventToFanout(ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE, event);
         }
         savedLoanRequest.markEventsAsCommitted();
-        
+
         log.info("Loan request rejected for proposal: {}", command.proposalId());
     }
-    
+
     @Transactional
     public void updateLoanRequest(UpdateLoanRequestCommand command) {
         log.info("Updating loan request for proposal: {}", command.proposalId());
-        
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId())
-            .orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
-        
-        loanRequest.update(
-            command.memberId(),
-            command.proposalId(),
-            command.proposedLoanAmount(),
-            command.noOfInstallments(),
-            command.loanProductId()
-        );
-        
+
+        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+
+        loanRequest.update(command.memberId(), command.proposalId(), command.proposedLoanAmount(), command.noOfInstallments(), command.loanProductId());
+
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
-        
+
         // Save event sourcing event
         LoanRequestEvent loanRequestEvent = LoanRequestEvent.createUpdatedEvent(savedLoanRequest);
         loanRequestEventRepository.save(loanRequestEvent);
-        
+
         // Save outbox event
         LoanRequestOutboxEvent loanRequestOutboxEvent = LoanRequestOutboxEvent.createUpdatedEvent(savedLoanRequest);
         loanRequestOutboxEventRepository.save(loanRequestOutboxEvent);
-        
+
         // Publish domain events to fanout exchange
         for (DomainEvent event : savedLoanRequest.getUncommittedEvents()) {
-            eventPublisher.publishEventToFanout(
-                ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE,
-                event
-            );
+            eventPublisher.publishEventToFanout(ApplicationConstants.LOAN_REQUEST_FANOUT_EXCHANGE, event);
         }
         savedLoanRequest.markEventsAsCommitted();
-        
+
         log.info("Loan request updated for proposal: {}", command.proposalId());
     }
 }
