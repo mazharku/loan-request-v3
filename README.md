@@ -11,7 +11,7 @@ This project implements a loan request system using CQRS (Command Query Responsi
 ## Services
 
 ### Loan Request Command Service
-- **Port**: 8083
+- **Port**: 8086
 - **Database**: loan_request_command (MongoDB)
 - **Responsibilities**: 
   - Create loan requests from approved loan proposals
@@ -19,7 +19,7 @@ This project implements a loan request system using CQRS (Command Query Responsi
   - Publish domain events
 
 ### Loan Request Query Service
-- **Port**: 8084
+- **Port**: 8087
 - **Database**: loan_request_query (MongoDB)
 - **Responsibilities**:
   - Maintain read-optimized projections
@@ -70,22 +70,13 @@ This project implements a loan request system using CQRS (Command Query Responsi
 ### Health Checks
 - Command Service: http://localhost:8083/api/v1/loan-requests/health
 - Query Service: http://localhost:8084/api/v1/loan-requests/health
-- RabbitMQ Management: http://localhost:15672 (guest/guest)
+- RabbitMQ Management: http://localhost:15672 
 
 ## Integration with Loan Proposal Service
 
 This service automatically creates loan requests when loan proposals are approved in the `sbicloud-bd-v3-poc-java` system. Ensure both RabbitMQ instances are connected or use the same RabbitMQ instance for proper event flow.
 
-## API Endpoints
 
-### Query Service
-- `GET /api/v1/loan-requests` - Get all loan requests
-- `GET /api/v1/loan-requests/{id}` - Get loan request by ID
-- `GET /api/v1/loan-requests/customer/{customerId}` - Get loan requests by customer
-
-### Command Service
-- Basic health check endpoint available
-- Commands are primarily triggered via RabbitMQ events
 
 ## Development
 
