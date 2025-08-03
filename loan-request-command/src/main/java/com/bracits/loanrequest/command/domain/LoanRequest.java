@@ -36,7 +36,7 @@ public class LoanRequest extends AggregateRoot {
     public LoanRequest(String memberId, String proposalId, Double proposedLoanAmount, Double interestRate,
                        Integer noOfInstallments, String loanProductId) {
         super();
-        validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);
+       // validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);
         
         this.memberId = memberId;
         this.proposalId = proposalId;
@@ -101,10 +101,10 @@ public class LoanRequest extends AggregateRoot {
     
     public void update(String memberId, String proposalId, Double proposedLoanAmount, 
                       Integer noOfInstallments, String loanProductId) {
-        if (this.status != LoanRequestStatus.PENDING) {
+        /*if (this.status != LoanRequestStatus.PENDING) {
             throw new LoanRequestBusinessException("Can only update pending loan requests. Current status: " + this.status);
         }
-        validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);
+        validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);*/
         
         this.memberId = memberId;
         this.proposalId = proposalId;
