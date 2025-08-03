@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: loan-request-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - loan-request-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: loan-request-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - loan-request-network
+
+  loan-request-command:
+    build:
+      context: ./loan-request-command
+      dockerfile: Dockerfile
+    container_name: loan-request-command
+    restart: always
+    ports:
+      - "8086:8086"
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: password123
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - loan-request-network
+
+  loan-request-query:
+    build:
+      context: ./loan-request-query
+      dockerfile: Dockerfile
+    container_name: loan-request-query
+    restart: always
+    ports:
+      - "8087:8087"
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: password123
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - loan-request-network
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
+
+networks:
+  loan-request-network:
+    driver: bridge

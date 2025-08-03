@@ -1,0 +1,5 @@
+rootProject.name = 'loan-request-v3'
+
+include 'shared'
+include 'loan-request-command'
+include 'loan-request-query'

@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "84dc309b-73ca-4b6a-a250-75032ac2d0bb",
+		"name": "Loan Request Command API",
+		"description": "Collection for testing loan request command operations including create, approve, reject, and update operations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11027167"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/loan-requests/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"loan-requests",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Loan Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    pm.environment.set('loanRequestId', pm.response.text());",
+							"    console.log('Loan Request ID: ' + pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"proposalId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n    \"memberId\": \"1\",\n    \"loanProductId\": \"LP-001\",\n    \"proposedLoanAmount\": 50000.00,\n    \"interestRate\": 12.5,\n    \"noOfInstallments\": 24\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/loan-requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"loan-requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Approve Loan Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"approverId\": 12345,\n    \"approvedLoanAmount\": 45000.00,\n    \"approvedDurationInMonths\": 24\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/loan-requests/{{loanRequestId}}/approve",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"loan-requests",
+						"{{loanRequestId}}",
+						"approve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject Loan Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set('proposalId', 'PROP-' + Math.floor(Math.random() * 10000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rejectionReason\": \"Insufficient credit score\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/loan-requests/proposal/{{proposalId}}/reject",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"loan-requests",
+						"proposal",
+						"{{proposalId}}",
+						"reject"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Loan Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set('updateProposalId', 'PROP-' + Math.floor(Math.random() * 10000));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memberId\": \"1\",\n    \"loanProductId\": \"LP-002\",\n    \"proposedLoanAmount\": 75000.00,\n    \"interestRate\": 11.5,\n    \"noOfInstallments\": 36\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/loan-requests/proposal/f47ac10b-58cc-4372-a567-0e02b2c3d479",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"loan-requests",
+						"proposal",
+						"f47ac10b-58cc-4372-a567-0e02b2c3d479"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "loanRequestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "proposalId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updateProposalId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
