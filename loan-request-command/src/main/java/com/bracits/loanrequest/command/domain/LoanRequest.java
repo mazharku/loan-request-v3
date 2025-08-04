@@ -79,12 +79,12 @@ public class LoanRequest extends AggregateRoot {
         ));
     }
     
-    public void reject(String rejectionReason) {
+    public void reject(String proposalId,String rejectionReason) {
         /*if (this.status != LoanRequestStatus.PENDING) {
             throw new LoanRequestBusinessException("Can only reject pending loan requests. Current status: " + this.status);
         }
         validateRejectionParams(rejectionReason);*/
-        
+        this.proposalId= proposalId;
         this.status = LoanRequestStatus.REJECTED;
         this.processedAt = LocalDateTime.now();
         this.remarks = rejectionReason;

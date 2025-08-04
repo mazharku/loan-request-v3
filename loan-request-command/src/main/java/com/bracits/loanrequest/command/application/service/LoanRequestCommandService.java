@@ -94,7 +94,7 @@ public class LoanRequestCommandService {
         //LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
 
         LoanRequest loanRequest = new LoanRequest();
-        loanRequest.reject(command.rejectionReason());
+        loanRequest.reject(command.proposalId(),command.rejectionReason());
 
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
 

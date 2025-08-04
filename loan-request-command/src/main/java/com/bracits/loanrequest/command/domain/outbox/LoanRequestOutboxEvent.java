@@ -60,7 +60,7 @@ public class LoanRequestOutboxEvent {
         event.eventType = "LoanRequestUpdatedEvent";
         event.payload = loanRequest;
         event.timestamp = Instant.now();
-        event.status = loanRequest.getStatus().name();
+        event.status = LoanRequestStatus.PENDING.name();
         return event;
     }
 }
