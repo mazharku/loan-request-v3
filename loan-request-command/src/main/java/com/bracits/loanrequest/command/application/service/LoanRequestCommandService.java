@@ -12,7 +12,6 @@ import com.bracits.loanrequest.command.repository.LoanRequestOutboxEventReposito
 import com.bracits.loanrequest.command.repository.LoanRequestRepository;
 import com.bracits.shared.constants.ApplicationConstants;
 import com.bracits.shared.domain.event.DomainEvent;
-import com.bracits.shared.exception.LoanRequestNotFoundException;
 import com.bracits.shared.exception.LoanRequestProcessingException;
 import com.bracits.shared.infrastructure.messaging.EventPublisher;
 import lombok.RequiredArgsConstructor;
@@ -65,9 +64,8 @@ public class LoanRequestCommandService {
     public void approveLoanRequest(ApproveLoanRequestCommand command) {
         log.info("Approving loan request for proposal: {}", command.proposalId());
 
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
-
-
+        //LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+        LoanRequest loanRequest = new LoanRequest();
         loanRequest.approve(command.proposalId(), command.approvedLoanAmount(), command.approvedDurationInMonths(), command.approverId().toString());
 
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
@@ -93,8 +91,9 @@ public class LoanRequestCommandService {
     public void rejectLoanRequest(RejectLoanRequestCommand command) {
         log.info("Rejecting loan request for proposal: {}", command.proposalId());
 
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+        //LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
 
+        LoanRequest loanRequest = new LoanRequest();
         loanRequest.reject(command.rejectionReason());
 
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
@@ -120,8 +119,9 @@ public class LoanRequestCommandService {
     public void updateLoanRequest(UpdateLoanRequestCommand command) {
         log.info("Updating loan request for proposal: {}", command.proposalId());
 
-        LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
+        //LoanRequest loanRequest = loanRequestRepository.findByProposalId(command.proposalId()).orElseThrow(() -> new LoanRequestNotFoundException(command.proposalId(), "proposal ID"));
 
+        LoanRequest loanRequest = new LoanRequest();
         loanRequest.update(command.memberId(), command.proposalId(), command.proposedLoanAmount(), command.noOfInstallments(), command.loanProductId());
 
         LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);

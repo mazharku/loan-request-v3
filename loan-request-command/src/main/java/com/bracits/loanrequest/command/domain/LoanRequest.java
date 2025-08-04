@@ -6,7 +6,6 @@ import com.bracits.shared.domain.event.LoanRequestApprovedEvent;
 import com.bracits.shared.domain.event.LoanRequestCreatedEvent;
 import com.bracits.shared.domain.event.LoanRequestRejectedEvent;
 import com.bracits.shared.domain.event.LoanRequestUpdatedEvent;
-import com.bracits.shared.exception.LoanRequestBusinessException;
 import com.bracits.shared.exception.LoanRequestValidationException;
 
 import lombok.Getter;
