@@ -19,39 +19,124 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LoanRequest extends AggregateRoot {
     
+    private String aggregateId;
+    private String tracerId;
     private String memberId;
     private String proposalId;
+    private String proposalNo;
+    private String proposalRefNo;
+    private String proposedCOId;
     private String loanProductId;
+    private String loanSchemeId;
+    private String officeId;
+    private String projectId;
+    private LocalDateTime applicationDate;
     private Double proposedLoanAmount;
+    private Double proposedGrantAmount;
     private Double approvedLoanAmount;
     private Double interestRate;
     private Integer noOfInstallments;
+    private Integer proposedDurationInMonths;
+    private Double installmentAmount;
     private Integer approvedDurationInMonths;
     private LoanRequestStatus status;
     private String remarks;
+    private String proposalRemarks;
+    private String scannedFileName;
+    private Long loanProductPolicyId;
+    private Long loanProductDetailsId;
+    private Integer recordStatus;
+    private Long cohortMappingId;
+    private Long assetPurchaseId;
+    private String bufferId;
+    private Integer earner;
+    private String memberOwnIncome;
+    private String memberFamilyIncome;
+    private Integer loanUser;
+    private Integer apiDataSourceId;
+    private Integer ageType;
     private String approverId;
+    private String createdBy;
     private LocalDateTime processedAt;
     
-    public LoanRequest(String memberId, String proposalId, Double proposedLoanAmount, Double interestRate,
-                       Integer noOfInstallments, String loanProductId) {
+    public LoanRequest(String aggregateId, String tracerId, String proposalNo, String proposalRefNo,
+                       String proposedCOId, String memberId, String loanProductId, String loanSchemeId,
+                       String officeId, String projectId, LocalDateTime applicationDate,
+                       Double proposedLoanAmount, Double proposedGrantAmount, String proposalRemarks,
+                       String scannedFileName, Long loanProductPolicyId, Long loanProductDetailsId,
+                       Integer proposedDurationInMonths, Double interestRate, Integer noOfInstallments,
+                       Double installmentAmount, Integer recordStatus, Long cohortMappingId,
+                       Long assetPurchaseId, String bufferId, Integer earner, String memberOwnIncome,
+                       String memberFamilyIncome, Integer loanUser, Integer apiDataSourceId,
+                       Integer ageType, String createdBy) {
         super();
-       // validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);
-        
+        this.aggregateId = aggregateId;
+        this.tracerId = tracerId;
+        this.proposalNo = proposalNo;
+        this.proposalRefNo = proposalRefNo;
+        this.proposedCOId = proposedCOId;
         this.memberId = memberId;
-        this.proposalId = proposalId;
-        this.proposedLoanAmount = proposedLoanAmount;
-        this.noOfInstallments = noOfInstallments;
         this.loanProductId = loanProductId;
+        this.loanSchemeId = loanSchemeId;
+        this.officeId = officeId;
+        this.projectId = projectId;
+        this.applicationDate = applicationDate;
+        this.proposedLoanAmount = proposedLoanAmount;
+        this.proposedGrantAmount = proposedGrantAmount;
+        this.proposalRemarks = proposalRemarks;
+        this.scannedFileName = scannedFileName;
+        this.loanProductPolicyId = loanProductPolicyId;
+        this.loanProductDetailsId = loanProductDetailsId;
+        this.proposedDurationInMonths = proposedDurationInMonths;
         this.interestRate = interestRate;
+        this.noOfInstallments = noOfInstallments;
+        this.installmentAmount = installmentAmount;
+        this.recordStatus = recordStatus;
+        this.cohortMappingId = cohortMappingId;
+        this.assetPurchaseId = assetPurchaseId;
+        this.bufferId = bufferId;
+        this.earner = earner;
+        this.memberOwnIncome = memberOwnIncome;
+        this.memberFamilyIncome = memberFamilyIncome;
+        this.loanUser = loanUser;
+        this.apiDataSourceId = apiDataSourceId;
+        this.ageType = ageType;
+        this.createdBy = createdBy;
         this.status = LoanRequestStatus.PENDING;
 
         registerEvent(new LoanRequestCreatedEvent(
             this.id,
+            this.tracerId,
             this.memberId,
-            this.proposalId,
+            this.proposalNo,
+            this.proposalRefNo,
+            this.proposedCOId,
+            this.loanProductId,
+            this.loanSchemeId,
+            this.officeId,
+            this.projectId,
+            this.applicationDate,
             this.proposedLoanAmount,
+            this.proposedGrantAmount,
+            this.proposalRemarks,
+            this.scannedFileName,
+            this.loanProductPolicyId,
+            this.loanProductDetailsId,
+            this.proposedDurationInMonths,
+            this.interestRate,
             this.noOfInstallments,
-            this.loanProductId
+            this.installmentAmount,
+            this.recordStatus,
+            this.cohortMappingId,
+            this.assetPurchaseId,
+            this.bufferId,
+            this.earner,
+            this.memberOwnIncome,
+            this.memberFamilyIncome,
+            this.loanUser,
+            this.apiDataSourceId,
+            this.ageType,
+            this.createdBy
         ));
     }
     

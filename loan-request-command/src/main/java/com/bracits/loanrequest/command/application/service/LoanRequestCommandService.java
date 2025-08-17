@@ -34,7 +34,40 @@ public class LoanRequestCommandService {
         try {
             log.info("Creating loan request for member: {}", command.memberId());
 
-            LoanRequest loanRequest = new LoanRequest(command.memberId(), command.proposalId(), command.proposedLoanAmount(), command.interestRate(), command.noOfInstallments(), command.loanProductId());
+            LoanRequest loanRequest = new LoanRequest(
+                command.aggregateId(),
+                command.tracerId(),
+                command.proposalNo(),
+                command.proposalRefNo(),
+                command.proposedCOId(),
+                command.memberId(),
+                command.loanProductId(),
+                command.loanSchemeId(),
+                command.officeId(),
+                command.projectId(),
+                command.applicationDate(),
+                command.proposedLoanAmount(),
+                command.proposedGrantAmount(),
+                command.proposalRemarks(),
+                command.scannedFileName(),
+                command.loanProductPolicyId(),
+                command.loanProductDetailsId(),
+                command.proposedDurationInMonths(),
+                command.interestRate(),
+                command.noOfInstallments(),
+                command.installmentAmount(),
+                command.recordStatus(),
+                command.cohortMappingId(),
+                command.assetPurchaseId(),
+                command.bufferId(),
+                command.earner(),
+                command.memberOwnIncome(),
+                command.memberFamilyIncome(),
+                command.loanUser(),
+                command.apiDataSourceId(),
+                command.ageType(),
+                command.createdBy()
+            );
 
             LoanRequest savedLoanRequest = loanRequestRepository.save(loanRequest);
 

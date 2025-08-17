@@ -33,9 +33,12 @@ public class LoanRequestCommandController {
             @PathVariable String proposalId,
             @RequestBody ApproveLoanRequestCommand command) {
         ApproveLoanRequestCommand commandWithId = new ApproveLoanRequestCommand(
+            command.tracerId(),
             proposalId,
+            command.approvedBy(),
             command.approverId(),
             command.approvedLoanAmount(),
+            command.approvedGrantAmount(),
             command.approvedDurationInMonths()
         );
         commandService.approveLoanRequest(commandWithId);
@@ -47,8 +50,10 @@ public class LoanRequestCommandController {
             @PathVariable String proposalId,
             @RequestBody RejectLoanRequestCommand command) {
         RejectLoanRequestCommand commandWithId = new RejectLoanRequestCommand(
+            command.tracerId(),
             proposalId,
-            command.rejectionReason()
+            command.rejectionReason(),
+            command.rejectedBy()
         );
         commandService.rejectLoanRequest(commandWithId);
         return ResponseEntity.ok().build();
@@ -60,12 +65,38 @@ public class LoanRequestCommandController {
             @RequestBody UpdateLoanRequestCommand command) {
 
         UpdateLoanRequestCommand commandWithId = new UpdateLoanRequestCommand(
+            command.tracerId(),
             proposalId,
+            command.proposalNo(),
+            command.proposalRefNo(),
+            command.proposedCOId(),
             command.memberId(),
             command.loanProductId(),
+            command.loanSchemeId(),
+            command.officeId(),
+            command.projectId(),
+            command.applicationDate(),
             command.proposedLoanAmount(),
+            command.proposedGrantAmount(),
+            command.proposalRemarks(),
+            command.scannedFileName(),
+            command.loanProductPolicyId(),
+            command.loanProductDetailsId(),
+            command.proposedDurationInMonths(),
             command.interestRate(),
-            command.noOfInstallments()
+            command.noOfInstallments(),
+            command.installmentAmount(),
+            command.recordStatus(),
+            command.cohortMappingId(),
+            command.assetPurchaseId(),
+            command.bufferId(),
+            command.earner(),
+            command.memberOwnIncome(),
+            command.memberFamilyIncome(),
+            command.loanUser(),
+            command.apiDataSourceId(),
+            command.ageType(),
+            command.updatedBy()
         );
         commandService.updateLoanRequest(commandWithId);
         return ResponseEntity.ok().build();
