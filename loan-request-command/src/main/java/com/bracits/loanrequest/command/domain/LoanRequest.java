@@ -156,11 +156,20 @@ public class LoanRequest extends AggregateRoot {
 
         registerEvent(new LoanRequestApprovedEvent(
             this.id,
+            this.tracerId,
             this.memberId,
             this.proposalId,
+            this.proposalNo,
+            this.loanProductId,
+            this.officeId,
+            this.projectId,
             this.approvedLoanAmount,
+            this.proposedGrantAmount,
+            this.approvedDurationInMonths,
             this.approverId,
-            this.remarks
+            null,
+            this.remarks,
+            this.processedAt
         ));
     }
     
@@ -178,32 +187,100 @@ public class LoanRequest extends AggregateRoot {
 
         registerEvent(new LoanRequestRejectedEvent(
             this.id,
+            this.tracerId,
+            this.memberId,
             this.proposalId,
-            this.remarks
+            this.proposalNo,
+            this.loanProductId,
+            this.officeId,
+            this.projectId,
+            this.remarks,
+            null,
+            this.processedAt
         ));
     }
     
-    public void update(String memberId, String proposalId, Double proposedLoanAmount, 
-                      Integer noOfInstallments, String loanProductId) {
+    public void update(String tracerId, String proposalNo, String proposalRefNo, String proposedCOId,
+                      String memberId, String loanProductId, String loanSchemeId, String officeId,
+                      String projectId, LocalDateTime applicationDate, Double proposedLoanAmount,
+                      Double proposedGrantAmount, String proposalRemarks, String scannedFileName,
+                      Long loanProductPolicyId, Long loanProductDetailsId, Integer proposedDurationInMonths,
+                      Double interestRate, Integer noOfInstallments, Double installmentAmount,
+                      Integer recordStatus, Long cohortMappingId, Long assetPurchaseId, String bufferId,
+                      Integer earner, String memberOwnIncome, String memberFamilyIncome, Integer loanUser,
+                      Integer apiDataSourceId, Integer ageType, String updatedBy) {
         /*if (this.status != LoanRequestStatus.PENDING) {
             throw new LoanRequestBusinessException("Can only update pending loan requests. Current status: " + this.status);
         }
         validateCreationParams(memberId, proposalId, proposedLoanAmount, noOfInstallments, loanProductId);*/
         
+        this.tracerId = tracerId;
+        this.proposalNo = proposalNo;
+        this.proposalRefNo = proposalRefNo;
+        this.proposedCOId = proposedCOId;
         this.memberId = memberId;
-        this.proposalId = proposalId;
-        this.proposedLoanAmount = proposedLoanAmount;
-        this.noOfInstallments = noOfInstallments;
         this.loanProductId = loanProductId;
+        this.loanSchemeId = loanSchemeId;
+        this.officeId = officeId;
+        this.projectId = projectId;
+        this.applicationDate = applicationDate;
+        this.proposedLoanAmount = proposedLoanAmount;
+        this.proposedGrantAmount = proposedGrantAmount;
+        this.proposalRemarks = proposalRemarks;
+        this.scannedFileName = scannedFileName;
+        this.loanProductPolicyId = loanProductPolicyId;
+        this.loanProductDetailsId = loanProductDetailsId;
+        this.proposedDurationInMonths = proposedDurationInMonths;
+        this.interestRate = interestRate;
+        this.noOfInstallments = noOfInstallments;
+        this.installmentAmount = installmentAmount;
+        this.recordStatus = recordStatus;
+        this.cohortMappingId = cohortMappingId;
+        this.assetPurchaseId = assetPurchaseId;
+        this.bufferId = bufferId;
+        this.earner = earner;
+        this.memberOwnIncome = memberOwnIncome;
+        this.memberFamilyIncome = memberFamilyIncome;
+        this.loanUser = loanUser;
+        this.apiDataSourceId = apiDataSourceId;
+        this.ageType = ageType;
+        this.createdBy = updatedBy;
         updateTimestamp();
 
         registerEvent(new LoanRequestUpdatedEvent(
             this.id,
+            this.tracerId,
             this.memberId,
             this.proposalId,
+            this.proposalNo,
+            this.proposalRefNo,
+            this.proposedCOId,
+            this.loanProductId,
+            this.loanSchemeId,
+            this.officeId,
+            this.projectId,
+            this.applicationDate,
             this.proposedLoanAmount,
+            this.proposedGrantAmount,
+            this.proposalRemarks,
+            this.scannedFileName,
+            this.loanProductPolicyId,
+            this.loanProductDetailsId,
+            this.proposedDurationInMonths,
+            this.interestRate,
             this.noOfInstallments,
-            this.loanProductId
+            this.installmentAmount,
+            this.recordStatus,
+            this.cohortMappingId,
+            this.assetPurchaseId,
+            this.bufferId,
+            this.earner,
+            this.memberOwnIncome,
+            this.memberFamilyIncome,
+            this.loanUser,
+            this.apiDataSourceId,
+            this.ageType,
+            this.createdBy
         ));
     }
     
